@@ -396,3 +396,25 @@ Item.joins("INNER JOIN orders ON orders.item_id = items.id").where("category LIK
    (1.0ms)  SELECT SUM("items"."price") FROM "items" INNER JOIN orders ON orders.item_id = items.id WHERE (category LIKE '%Books%')
 => 180356
 Simulate buying an item by inserting a User for yourself and an Order for that User.
+
+User.create(first_name: 'Ahkeem', last_name: 'Lang', email: 'coolestemailever@aol.aim.us')
+   (0.1ms)  begin transaction
+  SQL (1.5ms)  INSERT INTO "users" ("first_name", "last_name", "email") VALUES (?, ?, ?)  [["first_name", "Ahkeem"], ["last_name", "Lang"], ["email", "coolestemailever@aol.aim.us"]]
+   (0.8ms)  commit transaction
+=> #<User:0x007fcf428c9bf0
+ id: 51,
+ first_name: "Ahkeem",
+ last_name: "Lang",
+ email: "coolestemailever@aol.aim.us">
+
+ Order.create(user_id: User.where("last_name LIKE '%Lang%'").pluck(:id).first, item_id: '2', quantity: '10')
+   (1.6ms)  SELECT "users"."id" FROM "users" WHERE (last_name LIKE '%Lang%')
+   (0.2ms)  begin transaction
+  SQL (0.8ms)  INSERT INTO "orders" ("user_id", "item_id", "quantity", "created_at") VALUES (?, ?, ?, ?)  [["user_id", 51], ["item_id", 2], ["quantity", 10], ["created_at", 2016-07-07 23:09:34 UTC]]
+   (1.8ms)  commit transaction
+=> #<Order:0x007fcf40caa078
+ id: 379,
+ user_id: 51,
+ item_id: 2,
+ quantity: 10,
+ created_at: Thu, 07 Jul 2016 23:09:34 UTC +00:00>
