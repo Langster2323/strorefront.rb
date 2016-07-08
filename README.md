@@ -324,15 +324,15 @@ Item.where("category LIKE 'books'").order(:price).first
  price: 1496>
 
 Who lives at "6439 Zetta Hills, Willmouth, WY"? Do they have another address?
-Address.where("zip LIKE '15029'")
-  Address Load (0.5ms)  SELECT "addresses".* FROM "addresses" WHERE (zip LIKE '15029')
+Address.where("zip LIKE '15029'") User.find(Address.slect(:user_id).find_by(street: "6439 Zetta Hills").user_id)
+  <!-- Address Load (0.5ms)  SELECT "addresses".* FROM "addresses" WHERE (zip LIKE '15029')
 => [#<Address:0x007fcf44b7d778
   id: 43,
   user_id: 40,
   street: "6439 Zetta Hills",
   city: "Willmouth",
   state: "WY",
-  zip: 15029>]
+  zip: 15029>] -->
 
 
 Correct Virginie Mitchell's address to "New York, NY, 10108".
@@ -347,6 +347,8 @@ User.find(39)
   Address.update(city: 'New York')
 
   Address.update(city: 'New York').where(id: 37)
+  address.city("New York")
+  address.save
 
   Address.find(39)
   Address Load (0.2ms)  SELECT  "addresses".* FROM "addresses" WHERE "addresses"."id" = ? LIMIT ?  [["id", 39], ["LIMIT", 1]]
@@ -384,15 +386,17 @@ User.find(39)
 
 
 How much would it cost to buy one of each tool?
-Item.where("category LIKE '%Tools%'").distinct.sum("price")
+Item.distinct.where("category LIKE '%Tools%'").sum("price")
    (0.4ms)  SELECT DISTINCT SUM("items"."price") FROM "items" WHERE (category LIKE '%Tools%')
-=> 46477
+=> 7383
+
+
 How many total items did we sell?
 Order.sum(:quantity)
    (0.7ms)  SELECT SUM("orders"."quantity") FROM "orders"
 => 2125
 How much was spent on books?
-Item.joins("INNER JOIN orders ON orders.item_id = items.id").where("category LIKE '%Books%'").sum("price")
+Item.joins("INNER JOIN orders ON orders.item_id = items.id").where("category LIKE '%Books%'").sum("price * quantity")
    (1.0ms)  SELECT SUM("items"."price") FROM "items" INNER JOIN orders ON orders.item_id = items.id WHERE (category LIKE '%Books%')
 => 180356
 Simulate buying an item by inserting a User for yourself and an Order for that User.
