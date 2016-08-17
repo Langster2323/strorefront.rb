@@ -1,5 +1,5 @@
 class Order < ActiveRecord::Base
-  #These are active records
+  
   belongs_to :user
   belongs_to :item
 #the presence is like a NOT NULL command in SQL

@@ -1,4 +1,5 @@
 class User < ActiveRecord::Base
+  #These are active records that has a lot of associations
   has_many :addresses
   has_many :orders
   #:through acts as a join

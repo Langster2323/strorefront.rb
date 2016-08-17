@@ -336,53 +336,13 @@ Address.where("zip LIKE '15029'") User.find(Address.slect(:user_id).find_by(stre
 
 
 Correct Virginie Mitchell's address to "New York, NY, 10108".
-User.find(39)
-  User Load (7.7ms)  SELECT  "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?  [["id", 39], ["LIMIT", 1]]
-=> #<User:0x007fcf4524db20
- id: 39,
- first_name: "Virginie",
- last_name: "Mitchell",
- email: "daisy.crist@altenwerthmonahan.biz">
+Address.joins("INNER JOIN users ON users.id = addresses.user_id").where("users.first_name = 'Virginie' AND state = 'NY'").update(city: 'New York', zip: '10108')
 
-  Address.update(city: 'New York')
-
-  Address.update(city: 'New York').where(id: 37)
-  address.city("New York")
-  address.save
-
-  Address.find(39)
-  Address Load (0.2ms)  SELECT  "addresses".* FROM "addresses" WHERE "addresses"."id" = ? LIMIT ?  [["id", 39], ["LIMIT", 1]]
-=> #<Address:0x007fcf415acf68
- id: 39,
- user_id: 37,
- street: "7503 Cale Grove",
- city: "New York",
- state: "PA",
- zip: 49744>
-
- pry(main)> Address.update(state: 'NY').where(user_id: 37)
-
- Address.find(39)
-  Address Load (0.1ms)  SELECT  "addresses".* FROM "addresses" WHERE "addresses"."id" = ? LIMIT ?  [["id", 39], ["LIMIT", 1]]
-=> #<Address:0x007fcf453092a8
- id: 39,
- user_id: 37,
- street: "7503 Cale Grove",
- city: "New York",
- state: "NY",
- zip: 49744>
-
- Address.update(zip: '10108').where(user_id: 37)
-
- Address.find(39)
-  Address Load (0.1ms)  SELECT  "addresses".* FROM "addresses" WHERE "addresses"."id" = ? LIMIT ?  [["id", 39], ["LIMIT", 1]]
-=> #<Address:0x007fcf44940f78
- id: 39,
- user_id: 37,
- street: "7503 Cale Grove",
- city: "New York",
- state: "NY",
- zip: 10108>
+Address Load (0.2ms)  SELECT "addresses".* FROM "addresses" INNER JOIN users ON users.id = addresses.user_id WHERE (users.first_name = 'Virginie' AND state = 'NY')
+   (0.1ms)  begin transaction
+  SQL (0.8ms)  UPDATE "addresses" SET "city" = ?, "zip" = ? WHERE "addresses"."id" = ?  [["city", "New York"], ["zip", 10108], ["id", 41]]
+   (1.0ms)  commit transaction
+=> [#<Address:0x007ff7c40f21c0 id: 41, user_id: 39, street: "12263 Jake Crossing", city: "New York", state: "NY", zip: 10108>]
 
 
 How much would it cost to buy one of each tool?
